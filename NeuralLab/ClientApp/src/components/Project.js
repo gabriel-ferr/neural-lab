@@ -149,6 +149,8 @@ const Project = (props) => {
         if (result == '') { setCreateProject(false); }
         else {
             setCreateProject(false);
+            const accuracy = result["NetworkAccuracy"] == 0 ? undefined : result["NetworkAccuracy"];
+            setProject([result["Id"], result["Name"], result["OwnerId"], result["OwnerName"], result["NetworkName"], accuracy, result["CanCreateProject"], result["CanDeleteOthersProjects"]]);
 
             console.log(result);
         }
@@ -165,7 +167,7 @@ const Project = (props) => {
                         <div className="line">
                             <CreateProjectButton createProject={openCreateProject} actived={project[6]}/>
                             <span className="lineButtons"><Button variant="outlined" startIcon={<FolderOpenIcon />} sx={{ color: '#005f6b', }}>Carregar</Button></span>
-                            <DeleteProject deleteProject={deleteProject} actived={project[7]}/>
+                            <DeleteProject deleteProject={deleteProject} actived={(project[7]) || (userid == project[2])}/>
                         </div>
                     </Box>
                     <Box sx={{ width: '100%', heigth: '100%', backgroundColor: 'yellow', }}>Teste</Box>

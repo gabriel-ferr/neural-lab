@@ -65,6 +65,15 @@ public class ProjectController : ControllerBase
 
         accounts[0].AddProject(id);
 
-        return JsonSerializer.Serialize(new LoadProjectResponse() { Id = id, Name = project.Name, NetworkName = models[0].Name, NetworkAccuracy = models[0].Accuracy, OwnerId = accounts[0].Id, OwnerName = accounts[0].Name });
+        return JsonSerializer.Serialize(new LoadProjectResponse() {
+            Id = id,
+            Name = project.Name,
+            NetworkName = models[0].Name,
+            NetworkAccuracy = models[0].Accuracy,
+            OwnerId = accounts[0].Id,
+            OwnerName = accounts[0].Name,
+            CanCreateProject = accounts[0].Permissions.Contains(Backend.Enums.Permissions.CreateProject),
+            CanDeleteOthersProjects = accounts[0].Permissions.Contains(Backend.Enums.Permissions.DeleteOthersProjects)
+        });
     }
 }
