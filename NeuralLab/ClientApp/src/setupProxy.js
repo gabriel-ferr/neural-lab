@@ -2,10 +2,12 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const { env } = require('process');
 
 const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-  env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:18923';
+  env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'http://localhost:10278';
 
 const context = [
-
+    "/login",
+    "/networks",
+    "/project"
 ];
 
 const onError = (err, req, resp, target) => {
