@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NeuralLab.Backend.Models;
+using NeuralLab.Backend.Utils.Data;
 using System.Text.Json;
 
 namespace NeuralLab.Controllers;
@@ -8,6 +10,12 @@ public class CreateNetworkRequest
     public string? Name { get; set; }
     public int NetId { get; set; }
     public int Owner { get; set; }
+}
+
+public class OpenProjectRequest
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
 }
 
 public class LoadProjectResponse
@@ -32,6 +40,52 @@ public class ProjectController : ControllerBase
     private readonly ILogger<ProjectController> _logger;
 
     public ProjectController(ILogger<ProjectController> logger) { _logger = logger; }
+
+    [Route("push")]
+    [HttpGet]
+    public string Push()
+    {
+        List<ListPushReponse> list = new();
+
+        //  tem que especificar mais!!
+        foreach (Backend.Models.Project project in Backend.Global.Projects)
+            list.Add(new ListPushReponse() { Id = project.Id, Name = project.Name });
+
+        return JsonSerializer.Serialize(list);
+    }
+
+    [Route("open")]
+    [HttpPost]
+    public string Open(OpenProjectRequest request)
+    {
+        List<Backend.Models.Project> projects = Backend.Global.Projects.FindAll(x => x.Id == request.Id);
+        if (projects.Count == 0) return JsonSerializer.Serialize(new RequestError() { Id = -3, Message = "O projeto não existe." });
+        else if (projects.Count > 1) return JsonSerializer.Serialize(new RequestError() { Id = -3, Message = "Uma multiplicade de projetos de mesmo registro foi identificado e não pode ser carregado." });
+        Backend.Models.Project project = projects[0];
+
+        List<Backend.Models.Model> models = Backend.Global.NetworkModels.FindAll(x => x.Id == project.Model);
+        List<Backend.Models.User> accounts = Backend.Global.Accounts.FindAll(x => x.Id == project.Owner);
+
+        if (models.Count == 0) return JsonSerializer.Serialize(new RequestError() { Id = -2, Message = "A rede escolhida não foi identificada no sistema." });
+        else if (models.Count > 1) return JsonSerializer.Serialize(new RequestError() { Id = -2, Message = "Uma multiplicidade da rede escolhida foi localizada e o projeto não pode ser criado com ela." });
+        if (accounts.Count == 0) return JsonSerializer.Serialize(new RequestError() { Id = -2, Message = "O usuário não foi identificada no sistema." });
+        else if (accounts.Count > 1) return JsonSerializer.Serialize(new RequestError() { Id = -2, Message = "Uma multiplicade de usuários de mesmo nome foi identificado, por favor, refaça o login." });
+
+        return JsonSerializer.Serialize(new LoadProjectResponse()
+        {
+            Id = project.Id,
+            Name = project.Name,
+
+            NetworkName = models[0].Name,
+            NetworkAccuracy = models[0].Accuracy,
+
+            OwnerId = project.Owner,
+            OwnerName = accounts[0].Name,
+
+            CanCreateProject = accounts[0].Permissions.Contains(Backend.Enums.Permissions.CreateProject),
+            CanDeleteOthersProjects = accounts[0].Permissions.Contains(Backend.Enums.Permissions.DeleteOthersProjects)
+        });
+    }
 
     [Route("create")]
     [HttpPost]

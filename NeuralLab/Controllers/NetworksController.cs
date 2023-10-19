@@ -3,6 +3,12 @@ using System.Text.Json;
 
 namespace NeuralLab.Controllers;
 
+public class ListPushReponse
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+}
+
 [ApiController]
 [Route("networks")]
 public class NetworksController : ControllerBase
@@ -15,6 +21,10 @@ public class NetworksController : ControllerBase
     [HttpGet]
     public string Push()
     {
-        return JsonSerializer.Serialize(Backend.Global.NetworkModels);
+        List<ListPushReponse> list = new();
+        foreach (Backend.Models.Model model in Backend.Global.NetworkModels)
+            list.Add(new ListPushReponse() { Id = model.Id, Name = model.Name });
+
+        return JsonSerializer.Serialize(list);
     }
 }

@@ -32,6 +32,100 @@ const CreateProjectButton = (props) => {
     }
 }
 
+const OpenProjectButton = (props) => {
+    const { openProject, actived } = props;
+
+    if (actived) {
+        return (
+            <span className="lineButtons"><Button variant="outlined" startIcon={<FolderOpenIcon />} sx={{ color: '#005f6b', }} onClick={openProject}>Abrir</Button></span>
+        );
+    }
+}
+
+const OpenProjectDialog = (props) => {
+    const { close, open, userid } = props;
+
+    const [loading, setLoading] = React.useState(true);
+    const [loaded, setLoaded] = React.useState(false);
+    const [alert, setAlert] = React.useState('');
+
+    const [projects, setProjects] = React.useState([{Id: 0, Name: undefined}]);
+    const [selected, setSelected] = React.useState(0);
+
+    const handleClose = () => { close(''); }
+    const handleSelected = (event) => { setSelected(event.target.value); }
+
+    const post = () => {
+        setLoading(true);
+
+        const data = { Id: selected, UserId: userid };
+        axios.post('project/open', data)
+            .then((response) => {
+                const info = response["data"];
+                if (info["Id"] < 0) {
+                    setAlert(info["Message"]);
+                    setLoading(false);
+                }
+                else {
+                    close(info);
+                    setLoading(false);
+                }
+            });
+    }
+
+    const get = () => {
+        axios.get('project/push').then((response) => {
+            setProjects(response["data"]);
+            console.log(response["data"]);
+            setSelected(projects[0]["Id"]);
+            setLoading(false);
+            setLoaded(true);
+        });
+    }
+
+    if (open) {
+        if (!loaded) { get(); }
+        return (loading ? <CircularProgress sx={{ marginLeft: '50vw', marginTop: '50vh', }} /> :
+            <Dialog onClose={handleClose} open={open}>
+                <Collapse in={alert != ''} sx={{ heigth: "48px" }}>
+                    <Alert
+                        size="small"
+                        sx={{ width: "92%" }}
+                        severity="error"
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setAlert('');
+                                }}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        }
+                    >
+                        {alert}
+                    </Alert>
+                </Collapse>
+                <DialogTitle sx={{ padding: '12px 16px', marginLeft: '16px' }}><span className="title">Abrir Projeto</span></DialogTitle>
+                <FormControl required sx={{ marginLeft: '4%', marginBottom: '16px', width: '92%' }} variant="outlined">
+                    <InputLabel id="network">Projeto</InputLabel>
+                    <Select labelId="network" id="network-select" value={selected} label="Rede" onChange={handleSelected}>
+                        {
+                            projects.map(net =>
+                                <MenuItem key={net["Id"]} value={net["Id"]}> {net["Name"]} </MenuItem>
+                            )
+                        }
+                    </Select>
+                </FormControl>
+
+                <Button startIcon={<AddIcon />} onClick={post} sx={{ marginLeft: '40%', width: '20%', marginBottom: '16px' }} variant="outlined">Criar</Button>
+            </Dialog>
+        );
+    }
+}
+
 const CreateProject = (props) => {
     const { close, open, userid } = props;
 
@@ -51,11 +145,9 @@ const CreateProject = (props) => {
         setLoading(true);
 
         const data = { Name: name, NetId: networkId, Owner: userid };
-        console.log(data);
         axios.post('project/create', data)
             .then((response) => {
                 const info = response["data"];
-                console.log(response);
                 if (info["Id"] < 0) {
                     setAlert(info["Message"]);
                     setLoading(false);
@@ -70,7 +162,7 @@ const CreateProject = (props) => {
     const get = () => {
         axios.get('networks/push').then((response) => {
             setNetworks(response["data"]);
-            console.log(response["data"]);
+            setNetworkId(networks[0]["Id"]);
             setLoading(false);
             setLoaded(true);
         });
@@ -139,9 +231,11 @@ const Project = (props) => {
     const [project, setProject] = React.useState([0, '', 0, '', '', undefined, true, false]);
 
     const [createProject, setCreateProject] = React.useState(false);
+    const [openProject, setOpenProject] = React.useState(false);
 
 
     const openCreateProject = () => { setCreateProject(true); }
+    const openOpenProject = () => { setOpenProject(true); }
 
     const deleteProject = () => { }
 
@@ -151,8 +245,15 @@ const Project = (props) => {
             setCreateProject(false);
             const accuracy = result["NetworkAccuracy"] == 0 ? undefined : result["NetworkAccuracy"];
             setProject([result["Id"], result["Name"], result["OwnerId"], result["OwnerName"], result["NetworkName"], accuracy, result["CanCreateProject"], result["CanDeleteOthersProjects"]]);
+        }
+    }
 
-            console.log(result);
+    const openProjectResult = (result) => {
+        if (result == '') { setOpenProject(false); }
+        else {
+            setOpenProject(false);
+            const accuracy = result["NetworkAccuracy"] == 0 ? undefined : result["NetworkAccuracy"];
+            setProject([result["Id"], result["Name"], result["OwnerId"], result["OwnerName"], result["NetworkName"], accuracy, result["CanCreateProject"], result["CanDeleteOthersProjects"]]);
         }
     }
 
@@ -166,7 +267,7 @@ const Project = (props) => {
                         <div className="line"><div className="iconAdjust"><SpokeIcon sx={{ color: '#005f6b', }} /></div><span className="info">Rede usada:</span>&nbsp;{project[4]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div className="iconAdjust"><ShowChartIcon sx={{ color: '#005f6b', }} /></div><span className="info">Accuracy:</span>&nbsp;{project[5] * 100}%</div>
                         <div className="line">
                             <CreateProjectButton createProject={openCreateProject} actived={project[6]}/>
-                            <span className="lineButtons"><Button variant="outlined" startIcon={<FolderOpenIcon />} sx={{ color: '#005f6b', }}>Carregar</Button></span>
+                            <OpenProjectButton openProject={openOpenProject} actived={true}/>
                             <DeleteProject deleteProject={deleteProject} actived={(project[7]) || (userid == project[2])}/>
                         </div>
                     </Box>
@@ -176,6 +277,7 @@ const Project = (props) => {
                     <Box sx={{ width: '100%', heigth: '100%', backgroundColor: 'yellow', }}>Teste</Box>
                 </Grid>
             </Grid>
+            <OpenProjectDialog close={openProjectResult} open={openProject} userid={userid} />
             <CreateProject close={createProjectResult} open={createProject} userid={userid} />
         </div>
     );
