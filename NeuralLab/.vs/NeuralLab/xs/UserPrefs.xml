@@ -1,0 +1,64 @@
+﻿<Properties StartupConfiguration="{8D303CAA-D5C8-4257-AC65-4568BBC07AEE}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="NeuralLab/Functions/JSON Import/AirtonForm.cs">
+    <Files>
+      <File FileName="NeuralLab/TempManager.cs" Line="41" Column="58" IsPinned="True" />
+      <File FileName="NeuralLab/Models/TempFile.cs" Line="34" Column="50" IsPinned="True" />
+      <File FileName="NeuralLab/Program.cs" Line="18" Column="6" IsPinned="True" />
+      <File FileName="NeuralLab/Controllers/Data.cs" Line="37" Column="136" IsPinned="True" />
+      <File FileName="NeuralLab/ClientApp/src/components/EmptyJSFile.js" Line="24" Column="80" IsPinned="True" />
+      <File FileName="NeuralLab/Functions/JSON Import/AirtonForm.cs" Line="75" Column="46" IsPinned="True" />
+      <File FileName="NeuralLab/Models/TempDirectory.cs" Line="26" Column="50" IsPinned="True" />
+      <File FileName="NeuralLab/Structs/Data/DataFile.cs" Line="17" Column="1" IsPinned="True" />
+      <File FileName="NeuralLab/ClientApp/src/components/Home.js" Line="30" Column="1" />
+      <File FileName="NeuralLab/ClientApp/src/setupProxy.js" Line="7" Column="18" />
+      <File FileName="NeuralLab/Functions/Result/TemporalData.cs" Line="27" Column="35" />
+      <File FileName="NeuralLab/Interfaces/Data.cs" Line="9" Column="1" />
+      <File FileName="NeuralLab/Models/Data.cs" Line="16" Column="23" />
+      <File FileName="NeuralLab/Interfaces/IResult.cs" Line="14" Column="17" />
+      <File FileName="NeuralLab/Models/Result.cs" Line="24" Column="18" />
+      <File FileName="NeuralLab/Enums/ResultType.cs" Line="11" Column="28" />
+      <File FileName="NeuralLab/Models/Project.cs" Line="33" Column="95" />
+      <File FileName="NeuralLab/Structs/QuantitativeData.cs" Line="6" Column="2" />
+      <File FileName="NeuralLab/Structs/QualitativeDataset.cs" Line="5" Column="1" />
+      <File FileName="NeuralLab/Structs/Response/Error.cs" Line="4" Column="37" />
+      <File FileName="NeuralLab/Structs/Response/FileUpload.cs" Line="4" Column="66" />
+      <File FileName="NeuralLab/Structs/Data/Pair.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="NeuralLab" expanded="True">
+            <Node name="NeuralLab">
+              <Node name="ClientApp" expanded="True">
+                <Node name="src" expanded="True">
+                  <Node name="components" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Controllers" expanded="True" />
+              <Node name="Enums" expanded="True" />
+              <Node name="Exceptions" expanded="True" />
+              <Node name="Functions">
+                <Node name="JSON Import" expanded="True">
+                  <Node name="AirtonForm.cs" selected="True" />
+                </Node>
+                <Node name="Result" expanded="True" />
+              </Node>
+              <Node name="Interfaces" expanded="True" />
+              <Node name="Structs">
+                <Node name="Data" expanded="True" />
+              </Node>
+              <Node name="appsettings.json" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.NeuralLab PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+</Properties>
