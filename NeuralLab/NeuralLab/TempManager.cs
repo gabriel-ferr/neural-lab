@@ -58,9 +58,6 @@ public class TempManager
     /// <returns>Retorna um conjunto com o ID do arquivo e o modelo do arquivo temporário.</returns>
     public KeyValuePair<int, Models.TempDirectory> CreateDir(int parent)
     {
-        //  - Chama o GarbageCollector.
-        _ = GarbageCollector();
-
         //  - Gera uma identificação para a pasta.
         Random rnd = new();
         int id;
@@ -89,9 +86,6 @@ public class TempManager
     /// <returns>Retorna um conjunto com o ID do arquivo e o modelo do arquivo temporário.</returns>
     public KeyValuePair<int, Models.TempFile> Create()
     {
-        //  - Chama o GarbageCollector.
-        _ = GarbageCollector();
-
         //  - Gera uma identificação para o arquivo.
         Random rnd = new();
         int id;
@@ -113,9 +107,6 @@ public class TempManager
     /// <returns>Retorna um conjunto com o ID do arquivo e o modelo do arquivo temporário.</returns>
     public KeyValuePair<int, Models.TempFile> Create(int dirId)
     {
-        //  - Chama o GarbageCollector.
-        _ = GarbageCollector();
-
         //  - Gera uma identificação para o arquivo.
         Random rnd = new();
         int id;
@@ -128,6 +119,22 @@ public class TempManager
         //  - Cria o arquivo.
         files.Add(id, new Models.TempFile(Path.Combine(directories[dirId].Path, $"{id}.temp")));
         return new KeyValuePair<int, Models.TempFile>(id, files[id]);
+    }
+
+    public int Import(string path)
+    {
+        //  - Gera uma identificação para o arquivo.
+        Random rnd = new();
+        int id;
+        do
+        {
+            id = rnd.Next(1, int.MaxValue);
+            if (!files.ContainsKey(id)) break;
+        } while (true);
+
+        //  - Cria o registro do arquivo.
+        files.Add(id, new Models.TempFile(path));
+        return id;
     }
 
     /// <summary>
@@ -143,12 +150,12 @@ public class TempManager
         foreach (KeyValuePair<int, Models.TempFile> file in files)
         {
             //  - Verifica se o arquivo foi usado no limite do tempo estabelecido ou não.
-            if (file.Value.LastUse.AddMinutes(minutesToDelete).Ticks > now.Ticks)
+            if (file.Value.CreateTime.AddMinutes(minutesToDelete).Ticks > now.Ticks)
             {
                 try
                 {
                     //  - Deleta o arquivo.
-                    files[file.Key].Delete();
+                    DeleteFile(file.Key);
                     //  - Remove o arquivo da lista de acesso.
                     files.Remove(file.Key);
                 }
@@ -160,7 +167,27 @@ public class TempManager
             }
         }
 
+        //  - Lista os diretórios.
+        foreach (KeyValuePair<int, Models.TempDirectory> dir in directories)
+        {
+            //  - Verifica se o diretório está vazio.
+            int files = Directory.GetFiles(dir.Value.Path).Length;
+            int subdirs = Directory.GetDirectories(dir.Value.Path).Length;
+            if (((files + subdirs) == 0) && dir.Value.CreateTime.AddMinutes(minutesToDelete).Ticks > now.Ticks) Delete(dir.Value.Path);
+        }
+
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    ///     Deleta um arquivo temporário.
+    /// </summary>
+    /// <param name="fileId">ID do arquivo a ser deletado.</param>
+    public void DeleteFile(int fileId)
+    {
+        if (!File.Exists(files[fileId].Path)) throw new Exceptions.ServerException(204, "O arquivo não existe.");
+        File.Delete(files[fileId].Path);
+        files.Remove(fileId);
     }
 
     /// <summary>

@@ -13,16 +13,7 @@ public class TempFile
     /// <summary>
     ///     Última vez que o arquivo foi acessado.
     /// </summary>
-    public DateTime LastUse { get; private set; }
-
-    /// <summary>
-    ///     Deleta o arquivo.
-    /// </summary>
-    public void Delete ()
-    {
-        if (!File.Exists(Path)) throw new Exceptions.ServerException(204, "O arquivo não existe.");
-        File.Delete(Path);
-    }
+    public DateTime CreateTime { get; private set; }
 
     /// <summary>
     ///     Instância um novo arquivo temporário.
@@ -31,7 +22,7 @@ public class TempFile
     public TempFile(string path)
     {
         Path = path;
-        LastUse = DateTime.Now.ToUniversalTime();
+        CreateTime = DateTime.Now.ToUniversalTime();
     }
 
 }

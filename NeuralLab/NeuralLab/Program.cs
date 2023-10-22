@@ -18,6 +18,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.WebHost.ConfigureKestrel(serverOptions =>
+        {
+            serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(10);
+        });
+
         // Add services to the container.
 
         builder.Services.AddControllersWithViews();

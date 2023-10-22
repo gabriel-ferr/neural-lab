@@ -13,7 +13,7 @@ public class TempDirectory
     /// <summary>
     ///     Última vez que o arquivo foi acessado.
     /// </summary>
-    public DateTime LastUse { get; private set; }
+    public DateTime CreateTime { get; private set; }
 
     /// <summary>
     ///     Instância um novo arquivo temporário.
@@ -23,7 +23,7 @@ public class TempDirectory
     {
         Path = path;
 
-        LastUse = DateTime.Now.ToUniversalTime();
+        CreateTime = DateTime.Now.ToUniversalTime();
     }
 
 }

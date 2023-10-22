@@ -2,8 +2,11 @@
 import axios from 'axios';
 
 import { Button } from '@mui/material';
+import { ResponsiveLine } from '@nivo/line';
 
-const FileUpload = () => {
+const FileUpload = (props) => {
+    const { result } = props
+
     const [file, setFile] = useState();
     const [fileName, setFileName] = useState();
 
@@ -22,6 +25,9 @@ const FileUpload = () => {
         
         try {
             const res = await axios.post("data/import-quantitative", formData);
+            console.log(res);
+
+            result(res["data"]);
         } catch (ex) { console.log(ex); }
     }
     return (

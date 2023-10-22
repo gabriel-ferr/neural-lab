@@ -17,3 +17,7 @@ code {
   border-color: #1861ac;
 }
 
+.graph {
+    width: 500px;
+    height: 500px;
+}
